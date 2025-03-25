@@ -177,6 +177,9 @@ Calcula o comprueba las siguientes respuestas usando comandos de R:
 -   El valor máximo, ¿puede ser mayor que 1? Justifica tu respuesta.
 
 ::: {#respuesta-3 .callout-note}
+No realmente, dado que una de las propiedades de la función de densidad indica
+que la suma de todo el área bajo la curva es igual a 1. En otras palabras, 
+$ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 :::
 
 ### Pregunta 4
@@ -184,6 +187,8 @@ Calcula o comprueba las siguientes respuestas usando comandos de R:
 -   Calcula y representa la función de distribución de la variable normal
 
 *(Ejecuta `?cumsum` para consultar la ayuda de esa función).*
+
+?cumsum
 
 ::: {#respuesta-4 .callout-note}
 :::
