@@ -163,6 +163,7 @@ Calcula o comprueba las siguientes respuestas usando comandos de R:
 -   ¿Cuál es el valor máximo de la función de densidad?
 
 ::: {#respuesta-1 .callout-note}
+El valor máximo dependerá de los parámetros, pero será igual a $f(x) =+\infty$
 :::
 
 ### Pregunta 2
@@ -170,6 +171,8 @@ Calcula o comprueba las siguientes respuestas usando comandos de R:
 -   ¿Para qué valor de la variable aleatoria se da? ¿Cómo llamarías a ese valor?
 
 ::: {#respuesta-2 .callout-note}
+Para $f(x) = +\infty$
+Este sería la moda, que es el más probable que puede asumir la variable aleatoria.
 :::
 
 ### Pregunta 3
@@ -177,9 +180,9 @@ Calcula o comprueba las siguientes respuestas usando comandos de R:
 -   El valor máximo, ¿puede ser mayor que 1? Justifica tu respuesta.
 
 ::: {#respuesta-3 .callout-note}
-No realmente, dado que una de las propiedades de la función de densidad indica
-que la suma de todo el área bajo la curva es igual a 1. En otras palabras, 
-$ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
+Si, el resultado de 1 es debido a la integral, pero en si, como la densidad no es una
+"probabilidad directa" como tal, ya que se trata de una "densidad" y puede asumir valores mayores a 1 
+dependiendo del tipo de distribución.
 :::
 
 ### Pregunta 4
@@ -188,9 +191,19 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 
 *(Ejecuta `?cumsum` para consultar la ayuda de esa función).*
 
-?cumsum
 
+?cumsum
 ::: {#respuesta-4 .callout-note}
+$$
+F(x) = P(X \le x_k) = \int_{-\infty}^{x}  (fx)dx
+$$
+```{r}
+fdistribucion_normal <- normal |> mutate(cdf = cumsum(densidad) * PREC)
+
+fdistribucion_normal |> ggplot(mapping = aes(x = variable, y = cdf)) +
+                        geom_line(color = color_defecto)
+
+```
 :::
 
 ### Pregunta 5
@@ -198,6 +211,13 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   Calcula el valor esperado de la distribución normal.
 
 ::: {#respuesta-5 .callout-note}
+El valor esperado en una distribución normal sería:
+$$
+Valor.Esperado = E(X) = \int_{-\infty}^{+\infty} x * f (x)dx 
+$$
+Dado que $X \sim N(\mu, \sigma)$ la media se conocería previamente, pero,
+si se quiere conocer se puede estimar desde la distribución binomial $X \sim Bin(n, p)$.
+En esta caso, $\mu = np$ 
 :::
 
 # Ejercicio 2
@@ -210,7 +230,22 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 
 *(Si no sabes qué limites utilizar, consulta la ayuda de `dbeta()`).*
 
+?dbeta()
+
 ::: {#respuesta-6 .callout-note}
+```{r distribución Beta}
+PREC <- 1e-3
+DENS_INF <- 0
+DENS_SUP <- 1
+beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = variable |> dbeta(shape1 = 1, shape2= 1))
+
+beta |>ggplot(mapping = aes(x = variable, y = densidad)) + 
+  geom_line(color = color_defecto) + ylim(0, max(beta$densidad))
+
+
+
+```
 :::
 
 ### Pregunta 7
@@ -218,6 +253,8 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   ¿Qué forma tiene?
 
 ::: {#respuesta-7 .callout-note}
+Cuando se tiene que $Beta(\alpha = 1, \beta = 1)$ se observa que adopta una forma
+simétrica al igual que una distribución uniforme $DU(0, 1)$
 :::
 
 ## Parámetros de la distribución Beta
@@ -227,6 +264,18 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   Prueba con diferentes valores de $\alpha$ y $\beta$.
 
 ::: {#respuesta-8 .callout-note}
+```{r}
+PREC <- 1e-3
+DENS_INF <- 0
+DENS_SUP <- 1
+beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = variable |> dbeta(shape1 = 2, shape2= 7))
+
+beta |> ggplot(mapping = aes(x = variable, y = densidad)) + 
+  geom_line(color = color_defecto) + ylim(0, max(beta$densidad))
+
+```
+
 :::
 
 ### Pregunta 9
@@ -234,6 +283,11 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   ¿Qué ocurre a medida que van creciendo?
 
 ::: {#respuesta-9 .callout-note}
+Con parámetros $Beta(\alpha = 2, \beta = 7)$ se ve que la densidad se inclina
+hacia la izquierda, en donde la mayoría de valores se aproximan al límite inferior.
+Sin embargo, mientras más aumenta alfa y toma un valor igual a beta
+$Beta(\alpha = 7, \beta = 7)$ la distribución toma la forma de una distribución normal estandarizada, es decir:
+$N(0, 1)$
 :::
 
 ### Pregunta 10
@@ -241,6 +295,11 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   ¿Qué ocurre cuando son iguales? ¿Y cuándo son distintos?
 
 ::: {#respuesta-10 .callout-note}
+Cuando son iguales, y dependiendo de los parámetros que tome, se puede observar que se asemeja
+a otras distribuciones. Por ejemplo, $Beta(1, 1) \sim DU(0, 1)$, es decir, una distribución uniforme.
+Por otro lado, se tiene que, como fue explicado en la pregunta anterior, $Beta(7, 7) \sim N(0, 1)$.
+Ahora bien, cuando son distintos, la densidad tiende a inclinarse al límite superior en la medida que
+alfa aumenta y beta disminuye, y en el caso inverso, opta por el límite inferior. 
 :::
 
 ### Pregunta 11
@@ -248,6 +307,20 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   ¿Qué ocurre si tienen valores ligeramente superiores a 1?
 
 ::: {#respuesta-11 .callout-note}
+```{r}
+PREC <- 1e-3
+DENS_INF <- 0
+DENS_SUP <- 1
+beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = variable |> dbeta(shape1 = 1.5, shape2= 1.8))
+
+beta |> ggplot(mapping = aes(x = variable, y = densidad)) + 
+  geom_line(color = color_defecto)
+```
+
+Para $Beta(1.5, 1.8)$ se observa que la gráfica comienza a parecerse a una distribución normal poco a poco 
+ya que toma la forma de una campana simétrica, sin embargo en este caso se ve que se inclina ligeramente 
+por el límite inferior con respecto al centro de la variable. 
 :::
 
 ### Pregunta 12
@@ -255,6 +328,18 @@ $ f(x) = \int_{-\infty}^{+\infty} f(x) \,dx = 1$
 -   ¿Qué ocurre si tienen valores por debajo de 1?
 
 ::: {#respuesta-12 .callout-note}
+```{r}
+PREC <- 1e-3
+DENS_INF <- 0
+DENS_SUP <- 1
+beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = variable |> dbeta(shape1 = 0.5, shape2= 0.5))
+
+beta |> ggplot(mapping = aes(x = variable, y = densidad)) + 
+  geom_line(color = color_defecto)
+```
+Para $Beta(0.5, 0.5)$ se ve una forma de U y es asimétrica, lo que quiere decir que tiene
+densidades máximas en ambos extremos de la distribución.
 :::
 
 # Ejercicio 3
@@ -272,7 +357,20 @@ El jefe del departamento de analítica te asigna al proyecto y te pide que ajust
 
 -   ¿Cómo se representa la "tasa de aceptación" en el modelo?
 
+
 ::: {#respuesta-13 .callout-note}
+Se tiene que $f(\theta|y) = f(\theta) * f(y|\theta) / f(y)$
+
+Además $f(y|\theta) \sim Bin(n, \theta)$ y $f(\theta) \sim Beta(\alpha, \beta)$
+
+Por lo que:
+
+$$
+f(\theta|y) \propto f(\theta) f(y|\theta) = \frac {\theta ^ {\alpha - 1}* (1 - \theta)^ {\beta - 1}} 
+                                              {B(\alpha, \beta)} * \binom {n} {y} * \theta ^y * 
+                                              (1 - \theta)^ {n - y}
+$$
+Al ser no informativo, entonces $Beta(1, 1)$
 :::
 
 ### Pregunta 14
@@ -282,6 +380,23 @@ El jefe del departamento de analítica te asigna al proyecto y te pide que ajust
 *(Ajusta los ejes correctamente, si hace falta, como en la distribución uniforme).*
 
 ::: {#respuesta-14 .callout-note}
+Dado que es no informativo quiere decir que es "plano" de 0 a 1 para $\theta$,
+en ese caso, y al tratarse de una distribución beta-binomial, la distribución previa tiene que ser
+$$
+f(\theta) = \frac{\theta^{1-1} (1-\theta)^{1-1}}{\beta (1, 1)}
+$$
+```{r}
+PREC <- 1e-3
+DENS_INF <- 0
+DENS_SUP <- 1
+beta <- tibble(theta = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = theta |> dbeta(shape1 = 1, shape2= 1))
+
+beta |> ggplot(mapping = aes(x = theta, y = densidad)) + 
+  geom_line(color = color_defecto) + ylim(0, max(beta$densidad))
+```
+En este caso se tiene que $\theta$ también está asumiendo una distribución uniforme $\theta \sim DU(0, 1)$ 
+porque es una densidad simétrica e invariable de 0 a 1. 
 :::
 
 ### Pregunta 15
@@ -289,6 +404,11 @@ El jefe del departamento de analítica te asigna al proyecto y te pide que ajust
 -   Supón que $y$ es el número de usuarios/as que han respondido que "Sí" descargarían la app. Formula la verosimilitud del modelo.
 
 ::: {#respuesta-15 .callout-note}
+
+Al ser binomial-beta entonces se tiene que:
+$$
+L(\theta|y) = f(y|\theta) = \frac{n}{y} * \theta^y * (1-\theta)^{n-y}
+$$
 :::
 
 ## Ajuste del modelo
@@ -310,6 +430,14 @@ aceptacion_muestra <- tibble(
 -   Obtén, en base a estos datos, la distribución posterior de la tasa de aceptación (en forma analítica), y represéntala junto a la distribución previa.
 
 ::: {#respuesta-16 .callout-note}
+Si $f(\theta) \sim Beta(\alpha, \beta)$ y $f(y|\theta) \sim Bin(n, p)$
+
+Entonces se tiene que
+$$
+f(\theta|y) \propto f(\theta) f(y|\theta) = \frac {\theta ^ {\alpha - 1}* (1 - \theta)^ {\beta - 1}} 
+                                              {B(\alpha, \beta)} * \binom {n} {y} * \theta ^y * 
+                                              (1 - \theta)^ {n - y}
+$$
 :::
 
 ### Pregunta 17
