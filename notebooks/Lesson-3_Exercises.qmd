@@ -163,7 +163,16 @@ Calcula o comprueba las siguientes respuestas usando comandos de R:
 -   ¿Cuál es el valor máximo de la función de densidad?
 
 ::: {#respuesta-1 .callout-note}
-El valor máximo dependerá de los parámetros, pero será igual a $f(x) =+\infty$
+El valor máximo de $f(x)$ no tiene un límite en concreto. Es posible que este
+sea algo distinto entre los diferentes tipos de distribución ya que también dependerá
+de los parámetros (ver por ejemplo el gráfico en la pregunta 8), pero no tiene un 
+límite como tal, lo importante es que cumpla sus propiedades fundamentales que son:
+
+1) $f(x) \geq 0$
+2) $\int_{-\infty}^{+\infty} f(x)dx = 1$
+
+Ninguna de las condiciones indica que la función de densidad tenga un valor máximo
+(como 1). En otras palabras, no tiene límite definido.
 :::
 
 ### Pregunta 2
@@ -171,8 +180,8 @@ El valor máximo dependerá de los parámetros, pero será igual a $f(x) =+\inft
 -   ¿Para qué valor de la variable aleatoria se da? ¿Cómo llamarías a ese valor?
 
 ::: {#respuesta-2 .callout-note}
-Para $f(x) = +\infty$
-Este sería la moda, que es el más probable que puede asumir la variable aleatoria.
+Se da para el valor más plausible de la variable aleatoria, es decir, el valor más probable 
+que puede asumir. Este sería la moda.
 :::
 
 ### Pregunta 3
@@ -191,8 +200,6 @@ dependiendo del tipo de distribución.
 
 *(Ejecuta `?cumsum` para consultar la ayuda de esa función).*
 
-
-?cumsum
 ::: {#respuesta-4 .callout-note}
 $$
 F(x) = P(X \le x_k) = \int_{-\infty}^{x}  (fx)dx
@@ -211,13 +218,15 @@ fdistribucion_normal |> ggplot(mapping = aes(x = variable, y = cdf)) +
 -   Calcula el valor esperado de la distribución normal.
 
 ::: {#respuesta-5 .callout-note}
-El valor esperado en una distribución normal sería:
-$$
-Valor.Esperado = E(X) = \int_{-\infty}^{+\infty} x * f (x)dx 
-$$
-Dado que $X \sim N(\mu, \sigma)$ la media se conocería previamente, pero,
-si se quiere conocer se puede estimar desde la distribución binomial $X \sim Bin(n, p)$.
-En esta caso, $\mu = np$ 
+
+El valor esperado en una distribución normal es simplemente la media de la misma, $\mu = E(X)$.
+Es decir, si se tiene que $N(0, 1)$, entonces esto quiere decir que este tiene una 
+media de 0, en otras palabras un valor esperado de 0.
+```{r}
+DNmedia <- 0
+valor_esperado <- DNmedia
+print(valor_esperado)
+```
 :::
 
 # Ejercicio 2
@@ -229,8 +238,6 @@ En esta caso, $\mu = np$
 -   Representa una distribución Beta con parámetros $\alpha$ = $\beta$ = 1, $Beta(1, 1)$. Ajusta los ejes correctamente, si hace falta, como en la distribución uniforme.
 
 *(Si no sabes qué limites utilizar, consulta la ayuda de `dbeta()`).*
-
-?dbeta()
 
 ::: {#respuesta-6 .callout-note}
 ```{r distribución Beta}
@@ -254,7 +261,7 @@ beta |>ggplot(mapping = aes(x = variable, y = densidad)) +
 
 ::: {#respuesta-7 .callout-note}
 Cuando se tiene que $Beta(\alpha = 1, \beta = 1)$ se observa que adopta una forma
-simétrica al igual que una distribución uniforme $DU(0, 1)$
+simétrica y plana, al igual que una distribución uniforme $DU(0, 1)$
 :::
 
 ## Parámetros de la distribución Beta
@@ -265,9 +272,6 @@ simétrica al igual que una distribución uniforme $DU(0, 1)$
 
 ::: {#respuesta-8 .callout-note}
 ```{r}
-PREC <- 1e-3
-DENS_INF <- 0
-DENS_SUP <- 1
 beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
   densidad = variable |> dbeta(shape1 = 2, shape2= 7))
 
@@ -283,11 +287,11 @@ beta |> ggplot(mapping = aes(x = variable, y = densidad)) +
 -   ¿Qué ocurre a medida que van creciendo?
 
 ::: {#respuesta-9 .callout-note}
-Con parámetros $Beta(\alpha = 2, \beta = 7)$ se ve que la densidad se inclina
-hacia la izquierda, en donde la mayoría de valores se aproximan al límite inferior.
-Sin embargo, mientras más aumenta alfa y toma un valor igual a beta
-$Beta(\alpha = 7, \beta = 7)$ la distribución toma la forma de una distribución normal estandarizada, es decir:
-$N(0, 1)$
+Con parámetros $Beta(\alpha = 2, \beta = 7)$ se ve que la densidad tiene una asimetría positiva
+en donde la mayoría de valores se aproximan al límite inferior y se extiende hacia valores positivos
+Sin embargo, mientras más aumenta alfa y toma un valor igual a beta $Beta(\alpha = 7, \beta = 7)$ 
+la distribución toma la forma de una campana, como lo pudiera hacer una distribución normal estandarizada, 
+es decir:$N(0, 1)$.
 :::
 
 ### Pregunta 10
@@ -308,9 +312,6 @@ alfa aumenta y beta disminuye, y en el caso inverso, opta por el límite inferio
 
 ::: {#respuesta-11 .callout-note}
 ```{r}
-PREC <- 1e-3
-DENS_INF <- 0
-DENS_SUP <- 1
 beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
   densidad = variable |> dbeta(shape1 = 1.5, shape2= 1.8))
 
@@ -318,7 +319,7 @@ beta |> ggplot(mapping = aes(x = variable, y = densidad)) +
   geom_line(color = color_defecto)
 ```
 
-Para $Beta(1.5, 1.8)$ se observa que la gráfica comienza a parecerse a una distribución normal poco a poco 
+Para $Beta(1.5, 1.8)$ es observable que la gráfica comienza a parecerse a una distribución normal poco a poco 
 ya que toma la forma de una campana simétrica, sin embargo en este caso se ve que se inclina ligeramente 
 por el límite inferior con respecto al centro de la variable. 
 :::
@@ -329,9 +330,7 @@ por el límite inferior con respecto al centro de la variable.
 
 ::: {#respuesta-12 .callout-note}
 ```{r}
-PREC <- 1e-3
-DENS_INF <- 0
-DENS_SUP <- 1
+
 beta <- tibble(variable = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
   densidad = variable |> dbeta(shape1 = 0.5, shape2= 0.5))
 
@@ -370,7 +369,13 @@ f(\theta|y) \propto f(\theta) f(y|\theta) = \frac {\theta ^ {\alpha - 1}* (1 - \
                                               {B(\alpha, \beta)} * \binom {n} {y} * \theta ^y * 
                                               (1 - \theta)^ {n - y}
 $$
-Al ser no informativo, entonces $Beta(1, 1)$
+Al ser no informativo, entonces $Beta(1, 1)$. 
+Por lo tanto, la tasa de aceptación sería = $f(\theta)$ y por lo tanto, esto sería el resultado de obtener:
+$$
+f(\theta) = \frac {\theta ^ {1 - 1}* (1 - \theta)^ {1 - 1}}{B(1, 1)} 
+$$
+
+
 :::
 
 ### Pregunta 14
@@ -386,17 +391,15 @@ $$
 f(\theta) = \frac{\theta^{1-1} (1-\theta)^{1-1}}{\beta (1, 1)}
 $$
 ```{r}
-PREC <- 1e-3
-DENS_INF <- 0
-DENS_SUP <- 1
+
 beta <- tibble(theta = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
   densidad = theta |> dbeta(shape1 = 1, shape2= 1))
 
 beta |> ggplot(mapping = aes(x = theta, y = densidad)) + 
   geom_line(color = color_defecto) + ylim(0, max(beta$densidad))
 ```
-En este caso se tiene que $\theta$ también está asumiendo una distribución uniforme $\theta \sim DU(0, 1)$ 
-porque es una densidad simétrica e invariable de 0 a 1. 
+En este caso se tiene que $\theta$ es equivalente a una distribución uniforme $\theta \sim DU(0, 1)$ 
+porque es una densidad simétrica y plana de 0 a 1. 
 :::
 
 ### Pregunta 15
@@ -407,7 +410,7 @@ porque es una densidad simétrica e invariable de 0 a 1.
 
 Al ser binomial-beta entonces se tiene que:
 $$
-L(\theta|y) = f(y|\theta) = \frac{n}{y} * \theta^y * (1-\theta)^{n-y}
+L(\theta|y) = f(y|\theta) = \binom{n}{y} * \theta^y * (1-\theta)^{n-y}
 $$
 :::
 
@@ -438,6 +441,40 @@ f(\theta|y) \propto f(\theta) f(y|\theta) = \frac {\theta ^ {\alpha - 1}* (1 - \
                                               {B(\alpha, \beta)} * \binom {n} {y} * \theta ^y * 
                                               (1 - \theta)^ {n - y}
 $$
+Aplicando la propiedad de la conjugación:
+$$
+f(\theta|y) = \frac {\theta^{(\alpha + y) - 1} (1 - \theta)^{(\beta + n - y) - 1}}
+                  {B (\alpha + y, \beta + n - y)}
+$$
+```{r}
+n <- 22
+y <- 17
+alphapost <- 1 + y
+betapost <- 1 + n - y
+
+```
+
+Se tiene que $f(\theta) \sim Beta(18, 6)$
+
+```{r}
+
+posteriori <- tibble(theta = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = theta |> dbeta(shape1 = alphapost, shape2= betapost))
+
+posteriori |> ggplot(mapping = aes(x = theta, y = densidad)) + 
+  geom_line(color = color_defecto)
+
+```
+
+En comparación con la distribución a priori $\theta \sim Beta(1,1)$
+```{r}
+priori <- tibble(theta = seq(from = DENS_INF, to = DENS_SUP, by = PREC),
+  densidad = theta |> dbeta(shape1 = 1, shape2= 1))
+
+priori |> ggplot(mapping = aes(x = theta, y = densidad)) + 
+  geom_line(color = color_defecto)
+```
+
 :::
 
 ### Pregunta 17
