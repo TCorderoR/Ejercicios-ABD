@@ -103,6 +103,33 @@ $$
 -   Utilizando la expresión analítica del modelo, obtén la expresión analítica de la distribución posterior de la media para cada una de las dos clases, con 2 decimales.
 
 ::: {#respuesta-1 .callout-note}
+
+```{r}
+estadisticos_1 <- clase_1 |> 
+  summarise(media_1 = mean(tiempo), n_1 = n(), varianza_1 = var(tiempo))
+
+estadisticos_2 <- clase_2 |> 
+  summarise(media_2 = mean(tiempo), n_2 = n(), varianza_2 = var(tiempo))
+
+media_clase1 <- estadisticos_1 |> pull(media_1)
+n_clase1 <- estadisticos_1 |>  pull(n_1)
+varianza_clase1 <- estadisticos_1 |>  pull(varianza_1)
+
+media_clase2 <- estadisticos_2 |> pull(media_2)
+n_clase2 <- estadisticos_2 |> pull(n_2)
+varianza_clase2 <- estadisticos_2 |> pull(varianza_2)
+
+MU_POST1 <- (varianza_clase1 * MU_PREVIA + n_clase1 * SIGMA2_PREVIA * media_clase1 /
+               (varianza_clase1 + n_clase1 * SIGMA2_PREVIA)) |> round(2)
+
+MU_POST2 <- (varianza_clase2 * MU_PREVIA + n_clase2 * SIGMA2_PREVIA * media_clase2 /
+               (varianza_clase2 + n_clase2 * SIGMA2_PREVIA)) |> round(2)
+
+
+
+
+```
+
 :::
 
 ## Simulación de Monte Carlo
@@ -121,6 +148,19 @@ set.seed(20250318)
 ```
 
 ::: {#respuesta-2 .callout-note}
+```{r}
+
+SIGMA2_POST1 <- (varianza_clase1 * SIGMA2_PREVIA / (varianza_clase1 + n_clase1 *SIGMA2_PREVIA))
+SIGMA2_POST2 <- varianza_clase1 * SIGMA2_PREVIA / (varianza_clase2 + n_clase2 * SIGMA2_PREVIA)
+
+SD_POST1 <- sqrt(SIGMA2_POST1)
+SD_POST2 <- sqrt (SIGMA2_POST2)
+
+MC1_500 <- rnorm(500, mean = MU_POST1, sd = SD_POST1)
+MC2_500 <- rnorm(500, mean = MU_POST2, sd = SD_POST2)
+```
+
+
 :::
 
 ## Inferencia con la media de la distribución posterior
@@ -130,6 +170,17 @@ set.seed(20250318)
 -   Con las distribuciones simuladas de la pregunta anterior, estima la media y la varianza de cada distribución. Compara los resultados con los obtenidos en la Pregunta 1.
 
 ::: {#respuesta-3 .callout-note}
+```{r}
+
+MU1_MC500 <- mean(MC1_500)
+MU2_MC500 <- mean(MC2_500)
+
+VAR1_MC500 <- var(MC1_500)
+VAR2_MC500 <- var(MC2_500)
+
+
+```
+
 :::
 
 ## Tamaño muestral y error estándar de Monte Carlo
@@ -139,6 +190,22 @@ set.seed(20250318)
 -   Calcula el error estándar de Monte Carlo de las medias estimadas por el método de Monte Carlo [@hoff2009, p. 56], y su intervalo al 95% de confianza (p. 57). Asume que las varianzas verdaderas son desconocidas (i.e., utiliza las varianzas obtenidas por el método de Monte Carlo). ¿Cuál es la amplitud de los intervalos? Comprueba si los valores reales (obtenidos analíticamente) están comprendidos en los intervalos
 
 ::: {#respuesta-4 .callout-note}
+
+El error estándar de Monte Carlo es $\sqrt{\hat{\sigma^2} / S}$
+
+```{r}
+SE1_MC500 <- sqrt(VAR1_MC500/length(MC1_500))
+SE2_MC500 <- sqrt(VAR2_MC500/length(MC2_500))
+
+IC1MC_500 <- c(MU1_MC500 - 1.96 * SE1_MC500, MU1_MC500 + 1.96 * SE1_MC500)
+IC2MC_500 <- c(MU2_MC500 - 1.96 * SE2_MC500, MU2_MC500 + 1.96 * SE2_MC500)
+
+IC1MC_500
+IC2MC_500
+
+
+```
+
 :::
 
 ### Pregunta 5
@@ -146,6 +213,11 @@ set.seed(20250318)
 -   En base a las varianzas obtenidas por el método de Monte Carlo, determina el tamaño muestral de la distribución posterior necesario para alcanzar una precisión de 2 decimales en la estimación de la media de las distribuciones posteriores [@hoff2009, p. 56 ---vas a tener que "despejar" el tamaño de la muestra simulada]. Utiliza el valor mayor de ambas distribuciones para volver a calcular las medias, y comprueba si se alcanza la precisión esperada.
 
 ::: {#respuesta-5 .callout-note}
+```{r}
+S_Muestra1 <- VAR1_MC500 / SE1_MC500^2
+S_Muestra2 <- VAR2_MC500 /SE2_MC500^2 
+```
+
 :::
 
 ## Inferencia de intervalos y probabilidades
